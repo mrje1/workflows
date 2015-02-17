@@ -1,0 +1,19 @@
+{
+  "name": "workflows",
+  "version": "0.0.1",
+  "description": "Lynda.com Tutorial on Workflows for Developement",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrje1/workflows.git"
+  },
+  "author": "Jeff Epstein",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mrje1/workflows/issues"
+  },
+  "homepage": "https://github.com/mrje1/workflows"
+}
