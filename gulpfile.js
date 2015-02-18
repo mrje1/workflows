@@ -8,6 +8,8 @@ var gulp = require('gulp'),
 	minifyCSS = require('gulp-minify-css'),
 	minifyHTML = require('gulp-minify-html'),
 	jsonminify = require('gulp-jsonminify'),
+	imagemin = require('gulp-imagemin'),
+	pngcrush = require('imagemin-pngcrush'),
 	gulpif = require('gulp-if'),
 	uglify = require('gulp-uglify');
 
@@ -79,7 +81,7 @@ gulp.task('minify-css', function() {
   gulp.src('builds/development/css/*.css')
     .pipe(minifyCSS({keepBreaks:false}))
     .pipe(gulp.dest('builds/production/css'))
-});;
+});
 
 gulp.task('watch', function() {
 	gulp.watch(coffeeSources, ['coffee']);
@@ -87,6 +89,7 @@ gulp.task('watch', function() {
 	gulp.watch('components/sass/*.scss', ['compass']);
 	gulp.watch('builds/development/*.html', ['html']);
 	gulp.watch('builds/development/js/*.json', ['json']);
+	gulp.watch('builds/development/images/**/*.*', ['images']);
 });
 
 gulp.task('connect', function() {
@@ -114,6 +117,17 @@ gulp.task('html', function() {
 		.pipe(reload({stream:true}));	
 });
 
+gulp.task('images', function() {
+  gulp.src('builds/development/images/**/*.*')
+    .pipe(gulpif(env === 'production', imagemin({
+      progressive: true,
+      svgoPlugins: [{ removeViewBox: false }],
+      use: [pngcrush()]
+    })))
+    .pipe(gulpif(env === 'production', gulp.dest(outputDir + 'images')))
+	.pipe(reload({stream:true}));	
+});
+
 //This task named json is to reload any changes made to any .json files.
 gulp.task('json', function() {
 	gulp.src('builds/development/js/*.json')
@@ -123,4 +137,4 @@ gulp.task('json', function() {
 		.pipe(reload({stream:true}));	
 });
 
-gulp.task('default', ['coffee', 'js', 'compass', 'watch', 'connect', 'browser-sync', 'html', 'json', 'minify-css']);
+gulp.task('default', ['coffee', 'js', 'compass', 'watch', 'connect', 'browser-sync', 'html', 'json', 'minify-css', 'images']);
