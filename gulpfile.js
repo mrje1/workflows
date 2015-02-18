@@ -7,6 +7,7 @@ var gulp = require('gulp'),
 	connect = require('gulp-connect');
 	minifyCSS = require('gulp-minify-css'),
 	minifyHTML = require('gulp-minify-html'),
+	jsonminify = require('gulp-jsonminify'),
 	gulpif = require('gulp-if'),
 	uglify = require('gulp-uglify');
 
@@ -85,8 +86,7 @@ gulp.task('watch', function() {
 	gulp.watch(jsSources, ['js']);
 	gulp.watch('components/sass/*.scss', ['compass']);
 	gulp.watch('builds/development/*.html', ['html']);
-	gulp.watch(jsonSources, ['json']);
-
+	gulp.watch('builds/development/js/*.json', ['json']);
 });
 
 gulp.task('connect', function() {
@@ -116,7 +116,9 @@ gulp.task('html', function() {
 
 //This task named json is to reload any changes made to any .json files.
 gulp.task('json', function() {
-	gulp.src(jsonSources)
+	gulp.src('builds/development/js/*.json')
+		.pipe(gulpif(env === 'production', jsonminify()))
+		.pipe(gulpif(env === 'production', gulp.dest('builds/production/js')))
 		.pipe(connect.reload())
 		.pipe(reload({stream:true}));	
 });
