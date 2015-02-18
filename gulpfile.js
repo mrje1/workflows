@@ -6,6 +6,7 @@ var gulp = require('gulp'),
 	compass = require('gulp-compass');
 	connect = require('gulp-connect');
 	minifyCSS = require('gulp-minify-css'),
+	minifyHTML = require('gulp-minify-html'),
 	gulpif = require('gulp-if'),
 	uglify = require('gulp-uglify');
 
@@ -83,7 +84,7 @@ gulp.task('watch', function() {
 	gulp.watch(coffeeSources, ['coffee']);
 	gulp.watch(jsSources, ['js']);
 	gulp.watch('components/sass/*.scss', ['compass']);
-	gulp.watch(htmlSources, ['html']);
+	gulp.watch('builds/development/*.html', ['html']);
 	gulp.watch(jsonSources, ['json']);
 
 });
@@ -106,7 +107,9 @@ gulp.task('browser-sync', function() {
 
 //This task named html is to reload any changes made to any of the html files.
 gulp.task('html', function() {
-	gulp.src(htmlSources)
+	gulp.src('builds/development/*.html')
+		.pipe(gulpif(env === 'production', minifyHTML()))
+		.pipe(gulpif(env === 'production', gulp.dest(outputDir)))
 		.pipe(connect.reload())
 		.pipe(reload({stream:true}));	
 });
